@@ -1,0 +1,44 @@
+#version: '3'
+services:
+  mysql:
+    image: mysql:8.0
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpass
+      - MYSQL_DATABASE=team-member-projects
+      - MYSQL_USER=admin    
+      - MYSQL_PASSWORD=adminpass
+    volumes:
+    - mysql-data:/var/lib/mysql
+    container_name: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  phpmyadmin:
+    image: phpmyadmin
+    environment:
+      - PMA_HOST=mysql
+    ports:
+      - 8083:80
+    container_name: phpmyadmin
+  java:
+    image: 164.92.198.37:8083/jdk:1.0
+    container_name: java
+    ports:
+      - 8080:8080
+    environment:
+      - DB_NAME= team-member-projects
+      - DB_USER=admin
+      - DB_PWD=adminpass
+      - DB_SERVER=mysql 
+    depends_on:
+      mysql:
+        condition: service_healthy
+volumes:
+  mysql-data:
+    driver: local
