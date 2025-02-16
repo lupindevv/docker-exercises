@@ -30,7 +30,7 @@ services:
 
     container_name: phpmyadmin
   java:
-    image: 164.92.198.37:8083/jdk:1.0
+    image: 164.92.198.37:8085/new-jdk:1.1
     container_name: java
     ports:
       - 8080:8080
